@@ -1,0 +1,35 @@
+#!/usr/bin/perl -w
+
+use strict;
+use warnings;
+use Switch;
+
+die "Usage:perl $0 <sra...>" if(@ARGV < 1);
+
+submit();
+exit;
+
+sub submit{
+    foreach my $sra ( @ARGV ) {
+        ascp( $sra );
+    }
+}
+
+sub ascp{
+    
+    my $sra = shift;
+    my ($instant, $db) = $sra =~ /^(([A-Z]{3})\d{3})/;
+    my $by = '';
+
+    switch( $sra ){
+        case /^.RR/ { $by = 'ByRun'};
+        case /^.RP/ { $by = 'ByStudy'};
+        case /^.RS/ { $by = 'BySample'};
+        case /^.RX/ { $by = 'ByExp'};
+    }
+
+    my $ascp  = qq{ascp -i /etc/asperaweb_id_dsa.openssh --overwrite=diff -QTr -l6000m anonftp\@ftp.ncbi.nlm.nih.gov:/sra/sra-instant/reads/$by/sra/$db/$instant/$sra  ./\n};
+    print  $ascp;
+    system $ascp;
+
+}
