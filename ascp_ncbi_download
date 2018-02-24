@@ -8,6 +8,7 @@ die "Usage:perl $0 <ftp>" if(@ARGV != 1);
 my ( $url ) = @ARGV;
 
       $url  =~ s/ftp:\/\/.+.ncbi.nlm.nih.gov//;
+      $url  =~ s/https:\/\/.+.ncbi.nlm.nih.gov//;
 my $ftp  = qq{ascp -i /etc/asperaweb_id_dsa.openssh --overwrite=diff -QTr -l6000m anonftp\@ftp.ncbi.nlm.nih.gov:};
 
 my $ascp = $ftp . $url . " .\n";
